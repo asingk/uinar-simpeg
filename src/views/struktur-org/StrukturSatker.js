@@ -13,7 +13,7 @@ import { gql, useQuery } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
 
 const GET_STRUKTUR_ORG = gql`
-  query DaftarStrukturOrganisasi($unitKerjaId: String, $bagianId: Int, $subbagId: Int) {
+  query DaftarStrukturOrganisasi($unitKerjaId: String, $bagianId: ID, $subbagId: ID) {
     daftarStrukturOrganisasi(unitKerjaId: $unitKerjaId, bagianId: $bagianId, subbagId: $subbagId) {
       id
       unitKerja {
