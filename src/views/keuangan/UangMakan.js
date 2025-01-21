@@ -105,7 +105,7 @@ const UangMakan = () => {
             setSelect={(id) => setTahun(id)}
             end={2024}
             start={date.getFullYear()}
-            tahun={tahun}
+            tahun={Number(tahun)}
           />
         </CCol>
       </CRow>

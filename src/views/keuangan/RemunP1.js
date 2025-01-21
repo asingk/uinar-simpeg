@@ -152,7 +152,7 @@ const RemunP1 = () => {
             setSelect={(id) => setTahun(id)}
             end={2024}
             start={date.getFullYear()}
-            tahun={tahun}
+            tahun={Number(tahun)}
           />
         </CCol>
       </CRow>
