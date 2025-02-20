@@ -23,20 +23,15 @@ const BatalkanIzinModal = (props) => {
   const onAction = () => {
     setLoading(true)
     axios
-      .post(
-        import.meta.env.VITE_KEHADIRAN_API_URL +
-          '/pegawai/' +
-          loginId +
-          '/usul-izin/' +
-          props.id +
-          '/batal',
+      .put(
+        `${import.meta.env.VITE_SIMPEG_REST_URL}/usul-izin/${props.id}`,
         {
+          status: 3,
           updatedBy: loginId,
         },
         {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            apikey: import.meta.env.VITE_API_KEY,
+            Authorization: `Bearer ${keycloak.token}`,
           },
         },
       )

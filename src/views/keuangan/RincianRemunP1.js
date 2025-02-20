@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import {
   CAlert,
   CButton,
-  CCol,
+  CSpinner,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -14,6 +14,8 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilArrowThickLeft, cilWarning } from '@coreui/icons'
 import { useNavigate, useParams } from 'react-router-dom'
+import { KeycloakContext } from 'src/context'
+import { namaBulan } from 'src/utils'
 import dayjs from 'dayjs'
 
 const RincianRemunP1 = () => {
@@ -21,16 +23,21 @@ const RincianRemunP1 = () => {
 
   const [data, setData] = useState()
   const [error, setError] = useState('')
-  const [rekapData, setRekapData] = useState()
-  const [riwayatProfil, setRiwayatProfil] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const { id } = useParams()
   const navigate = useNavigate()
+  const keycloak = useContext(KeycloakContext)
 
   useEffect(() => {
+    setLoading(true)
     setError('')
     axios
-      .get(import.meta.env.VITE_KEHADIRAN_API_URL + '/rekap/remun-pegawai/' + id)
+      .get(`${import.meta.env.VITE_SIMPEG_REST_URL}/rekap/remun-pegawai/${id}`, {
+        headers: {
+          Authorization: `Bearer ${keycloak.token}`,
+        },
+      })
       .then(function (response) {
         // handle success
         setData(response.data)
@@ -43,56 +50,10 @@ const RincianRemunP1 = () => {
           setError(error.response.data)
         }
       })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [id])
-
-  useEffect(() => {
-    if (data) {
-      axios
-        .get(import.meta.env.VITE_KEHADIRAN_API_URL + '/pegawai/' + data?.nip + '/riwayat-profil', {
-          params: {
-            tahun: data?.tahun,
-            bulan: data?.bulan,
-          },
-        })
-        .then(function (response) {
-          // handle success
-          setRiwayatProfil(response.data)
-        })
-        .catch(function (error) {
-          // handle error
-          // console.log(error)
-          if (error.response) {
-            console.log(error.response.data)
-            // setErrorUangmakan(error.response.data)
-          }
-        })
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (data && riwayatProfil.length > 0) {
-      axios
-        .get(import.meta.env.VITE_KEHADIRAN_API_URL + '/rekap/remun', {
-          params: {
-            tahun: data?.tahun,
-            bulan: data?.bulan,
-            unitRemunId: riwayatProfil[0].unitRemun,
-          },
-        })
-        .then(function (response) {
-          // handle success
-          setRekapData(response.data)
-        })
-        .catch(function (error) {
-          // handle error
-          // console.log(error)
-          if (error.response) {
-            console.log(error.response.data)
-            // setError(error.response.data)
-          }
-        })
-    }
-  }, [data, riwayatProfil])
 
   // Create our number formatter.
   const formatter = new Intl.NumberFormat('id-ID', {
@@ -106,7 +67,15 @@ const RincianRemunP1 = () => {
 
   let remun
 
-  if (error) {
+  if (loading) {
+    remun = (
+      <div className="d-flex justify-content-center">
+        <CSpinner role="status">
+          <span className="visually-hidden">Loading...</span>
+        </CSpinner>
+      </div>
+    )
+  } else if (error) {
     remun = (
       <CAlert color="warning" className="d-flex align-items-center">
         <CIcon icon={cilWarning} className="flex-shrink-0 me-2" width={24} height={24} />
@@ -160,18 +129,17 @@ const RincianRemunP1 = () => {
   return (
     <>
       <h1 className="display-6 text-center">
-        Remun Bulan {data?.bulan} {data?.tahun}
+        Remun {namaBulan(data?.bulan)} {data?.tahun}
       </h1>
       <CButton className="mb-3" color="secondary" onClick={() => navigate('/keuangan/remun-p1')}>
         <CIcon icon={cilArrowThickLeft} />
       </CButton>
       {remun}
-      <CCol className="text-center mt-3">
-        <p>
-          Direkap pada {dayjs(rekapData?.lastModifiedDate).format('D/M/YYYY')} oleh{' '}
-          {rekapData?.lastModifiedBy}
-        </p>
-      </CCol>
+      {data?.createdDate && (
+        <div className="text-center mt-3">
+          <p>Direkap pada {dayjs(data.createdDate).format('D/M/YYYY')}</p>
+        </div>
+      )}
       <p>
         Note:{' '}
         <a

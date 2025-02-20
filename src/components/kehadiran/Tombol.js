@@ -1,26 +1,27 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import PropTypes from 'prop-types'
 
 import axios from 'axios'
-import dayjs from 'dayjs'
 import {
   CAlert,
   CCard,
   CCardBody,
-  CCardFooter,
   CCardHeader,
   CCardText,
   CCardTitle,
   CLoadingButton,
+  CToaster,
 } from '@coreui/react-pro'
 import { KeycloakContext } from 'src/context'
+import SuccessToast from 'src/components/SuccessToast'
+
+const successToast = <SuccessToast message={'Kehadiran Anda sudah terekam'} />
 
 const Tombol = (props) => {
   const [processing, setProcessing] = useState(false)
-  const [disable, setDisable] = useState(false)
-  const [recorded, setRecorded] = useState(false)
-  const [time, setTime] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [toast, addToast] = useState()
+  const toaster = useRef(null)
 
   const keycloak = useContext(KeycloakContext)
   const loginId = keycloak.idTokenParsed?.preferred_username
@@ -41,71 +42,29 @@ const Tombol = (props) => {
 
     await axios
       .post(
-        import.meta.env.VITE_KEHADIRAN_API_URL + '/kehadiran',
+        `${import.meta.env.VITE_SIMPEG_REST_URL}/kehadiran`,
         {
           idPegawai: loginId,
         },
         {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            apikey: import.meta.env.VITE_API_KEY,
+            Authorization: `Bearer ${keycloak.token}`,
           },
         },
       )
-      .then((response) => {
-        if (response.data.status === 'DATANG') {
-          setDisable(true)
-        }
-        setRecorded(true)
-        setTime(response.data['waktu'])
+      .then(() => {
+        addToast(successToast)
         localStorage.setItem('absenId', props.pegawai.id)
         localStorage.setItem('absenNama', props.pegawai.nama)
         props.clicked()
       })
       .catch((error) => {
-        // console.log(error)
         setErrorMessage(error?.response?.data?.message)
       })
       .finally(() => {
         setProcessing(false)
       })
   }
-
-  useEffect(() => {
-    const todayDateString = dayjs(new Date()).format('YYYY-MM-DD')
-
-    // jika status DATANG, mengecek apakah user sudah absen?
-    if (props.status === 'DATANG' || props.status === 'PULANG') {
-      axios
-        .get(
-          import.meta.env.VITE_KEHADIRAN_API_URL +
-            '/kehadiran/search?idPegawai=' +
-            loginId +
-            '&status=' +
-            props.status +
-            '&tanggal=' +
-            todayDateString,
-        )
-        .then(function (response) {
-          // handle success
-          if (response.data['status'] === 'DATANG') {
-            setDisable(true)
-          }
-          setRecorded(true)
-          setTime(response.data['waktu'])
-        })
-        .catch(function (error) {
-          // handle error
-          // console.log(error)
-          if (error.response) {
-            // console.log(error.response.data)
-            // setErrorMessage(error.response.data)
-          }
-        })
-    } else if (props.status) {
-      setDisable(true)
-    }
-  }, [loginId, props.status])
 
   return (
     <>
@@ -118,25 +77,20 @@ const Tombol = (props) => {
             color="success"
             loading={processing}
             onClick={absenHandler}
-            disabled={disable || processing}
+            disabled={processing}
           >
             {props.status}
           </CLoadingButton>
         </CCardBody>
-        {recorded && (
-          <CCardFooter className="text-medium-emphasis">{`Anda ${
-            props.status
-          } pukul ${time.substring(11, 16)}`}</CCardFooter>
-        )}
       </CCard>
       {errorMessage && (
         <CAlert className="mt-2" color="danger">
           Error: {errorMessage}
         </CAlert>
       )}
+      <CToaster className="p-3" placement="top-end" push={toast} ref={toaster} />
     </>
   )
-  // }
 }
 
 Tombol.propTypes = {

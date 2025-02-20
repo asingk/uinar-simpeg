@@ -8,10 +8,7 @@ const Footer = ({ pegawai }) => {
   const date = new Date(pegawai.updatedAt || pegawai.createdAt)
   return (
     <CCol md="12" className="text-center mt-3">
-      <p>
-        Diubah terakhir kali oleh {pegawai.updatedBy || pegawai.createdBy} pada{' '}
-        {dayjs(date).format('DD/MM/YYYY')}
-      </p>
+      <p>Diubah terakhir kali pada {dayjs(date).format('D/M/YYYY')}</p>
     </CCol>
   )
 }

@@ -26,41 +26,37 @@ const Laporan = (props) => {
 
   useEffect(() => {
     setLoading(true)
-    fetch(
-      import.meta.env.VITE_KEHADIRAN_API_URL +
-        '/pegawai/' +
-        loginId +
-        '/riwayat-hadir' +
-        '?bulan=' +
-        props.bulan +
-        '&tahun=' +
-        props.tahun,
-    )
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          setLoading(false)
-          setRiwayat(result)
-        },
-        (error) => {
-          setLoading(false)
-          setError(error)
-        },
-      )
     axios
       .get(
-        import.meta.env.VITE_KEHADIRAN_API_URL +
-          '/pegawai/' +
-          loginId +
-          '/riwayat-profil?bulan=' +
-          props.bulan +
-          '&tahun=' +
-          props.tahun,
+        `${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${loginId}/riwayat-kehadiran?bulan=${props.bulan}&tahun=${props.tahun}`,
+        {
+          headers: {
+            Authorization: `Bearer ${keycloak.token}`,
+          },
+        },
+      )
+      .then(function (response) {
+        setRiwayat(response.data.riwayatKehadiran.reverse())
+      })
+      .catch(function (error) {
+        setError(error)
+      })
+      .finally(function () {
+        setLoading(false)
+      })
+    axios
+      .get(
+        `${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${loginId}/riwayat-profil?bulan=${props.bulan}&tahun=${props.tahun}`,
+        {
+          headers: {
+            Authorization: `Bearer ${keycloak.token}`,
+          },
+        },
       )
       .then(function (response) {
         // handle success
         // console.log(response)
-        setProfilRiwayat(response.data[0])
+        setProfilRiwayat(response.data.riwayatProfil[0])
       })
       .catch(function (error) {
         // handle error
@@ -140,16 +136,18 @@ const Laporan = (props) => {
           <CTableBody>{rows}</CTableBody>
         </CTable>
         {riwayat.length > 0 && (
-          <div className="d-none d-md-flex mx-auto justify-content-center mb-3">
+          <div className="d-flex mx-auto justify-content-center mb-3">
             <CButton
-              color="primary"
+              color="danger"
+              variant="outline"
+              className="rounded-0"
               onClick={() =>
                 openInNewTab(
                   '/#/kehadiran/pegawai/pdf/' + loginId + '/' + props.tahun + '/' + props.bulan,
                 )
               }
             >
-              Buka Sebagai PDF
+              Cetak PDF
             </CButton>
           </div>
         )}

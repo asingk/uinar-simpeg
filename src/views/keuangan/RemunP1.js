@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { CAlert, CButton, CCol, CRow, CTable } from '@coreui/react-pro'
+import { CAlert, CButton, CCol, CRow, CSpinner, CTable } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilBug, cilPaw } from '@coreui/icons'
 import SelectTahun from '../../components/SelectTahun'
@@ -14,20 +14,26 @@ const RemunP1 = () => {
   const [tahun, setTahun] = useState(date.getFullYear())
   const [data, setData] = useState([])
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
   const keycloak = useContext(KeycloakContext)
   const loginId = keycloak.idTokenParsed?.preferred_username
   const navigate = useNavigate()
 
   useEffect(() => {
+    setLoading(true)
     axios
-      .get(import.meta.env.VITE_KEHADIRAN_API_URL + '/pegawai/' + loginId + '/remun', {
+      .get(`${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${loginId}/remun`, {
         params: {
           tahun: tahun,
+        },
+        headers: {
+          Authorization: `Bearer ${keycloak.token}`,
         },
       })
       .then(function (response) {
         // handle success
-        setData(response.data)
+        setData(response.data.remun)
       })
       .catch(function (error) {
         // handle error
@@ -39,13 +45,15 @@ const RemunP1 = () => {
         }
       })
       .finally(function () {
-        // always executed
+        setLoading(false)
       })
   }, [loginId, tahun])
 
   const onDetail = (id) => {
     navigate('/keuangan/remun-p1/' + id)
   }
+
+  let table
 
   const columns = [
     {
@@ -138,9 +146,28 @@ const RemunP1 = () => {
   } else {
     const item = {
       bulan: 'Tidak ada data',
-      _cellProps: { id: { scope: 'row' }, bulan: { colSpan: 11 } },
+      _cellProps: { id: { scope: 'row' }, bulan: { colSpan: 12 } },
     }
     items.push(item)
+  }
+
+  if (loading) {
+    table = (
+      <div className="d-flex justify-content-center">
+        <CSpinner role="status">
+          <span className="visually-hidden">Loading...</span>
+        </CSpinner>
+      </div>
+    )
+  } else if (error) {
+    table = (
+      <CAlert color="danger" className="d-flex align-items-center">
+        <CIcon icon={cilBug} className="flex-shrink-0 me-2" width={24} height={24} />
+        <div>{error}</div>
+      </CAlert>
+    )
+  } else {
+    table = <CTable responsive striped columns={columns} items={items} className="mb-4 mt-2" />
   }
 
   return (
@@ -156,27 +183,18 @@ const RemunP1 = () => {
           />
         </CCol>
       </CRow>
-      {error ? (
-        <CAlert color="danger" className="d-flex align-items-center">
-          <CIcon icon={cilBug} className="flex-shrink-0 me-2" width={24} height={24} />
-          <div>{error}</div>
-        </CAlert>
-      ) : (
-        <>
-          <CTable responsive columns={columns} items={items} className="mb-3" />
-          <p>Note:</p>
-          <ul className="list-unstyled">
-            <li>TD-30: Telat datang hingga 30 menit, potongan sebesar 0,5%.</li>
-            <li>TD-60: Telat datang hingga 60 menit, potongan sebesar 1%.</li>
-            <li>TD-90: Telat datang hingga 90 menit, potongann sebesar 1,25%.</li>
-            <li>TD: Tidak datang atau telat datang di atas 90 menit, potongan sebesar 1,5%.</li>
-            <li>CP-30: Cepat pulang hingga 30 menit, potongan sebesar 0,5%.</li>
-            <li>CP-60: Cepat pulang hingga 60 menit, potongan sebesar 1%.</li>
-            <li>CP-90: Cepat pulang hingga 90 menit, potongann sebesar 1,25%.</li>
-            <li>TP: Tidak pulang atau cepat pulang di atas 90 menit, potongan sebesar 1,5%.</li>
-          </ul>
-        </>
-      )}
+      {table}
+      <p>Note:</p>
+      <ul className="list-unstyled">
+        <li>TD-30: Telat datang hingga 30 menit, potongan sebesar 0,5%.</li>
+        <li>TD-60: Telat datang hingga 60 menit, potongan sebesar 1%.</li>
+        <li>TD-90: Telat datang hingga 90 menit, potongann sebesar 1,25%.</li>
+        <li>TD: Tidak datang atau telat datang di atas 90 menit, potongan sebesar 1,5%.</li>
+        <li>CP-30: Cepat pulang hingga 30 menit, potongan sebesar 0,5%.</li>
+        <li>CP-60: Cepat pulang hingga 60 menit, potongan sebesar 1%.</li>
+        <li>CP-90: Cepat pulang hingga 90 menit, potongann sebesar 1,25%.</li>
+        <li>TP: Tidak pulang atau cepat pulang di atas 90 menit, potongan sebesar 1,5%.</li>
+      </ul>
     </>
   )
 }

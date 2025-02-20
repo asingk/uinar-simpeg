@@ -37,10 +37,14 @@ const TambahIzinModal = (props) => {
 
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_KEHADIRAN_API_URL + '/kategori-izin')
+      .get(`${import.meta.env.VITE_SIMPEG_REST_URL}/kategori-izin`, {
+        headers: {
+          Authorization: `Bearer ${keycloak.token}`,
+        },
+      })
       .then((response) => {
         let jenis = [{ label: '-- Pilih Jenis Cuti/DL --', value: '' }]
-        response.data.forEach((row) => {
+        response.data.kategoriIzin.forEach((row) => {
           jenis.push({ label: row.desc, value: row.id })
         })
         setJenisCuti(jenis)
@@ -114,7 +118,7 @@ const TambahIzinModal = (props) => {
   )
 
   if (error) {
-    console.debug(errorMessage)
+    // console.debug(errorMessage)
     modalBody = <CAlert color="danger">{errorMessage}</CAlert>
   }
 
@@ -131,7 +135,7 @@ const TambahIzinModal = (props) => {
     try {
       setLoading(true)
       await axios.post(
-        import.meta.env.VITE_KEHADIRAN_API_URL + '/pegawai/' + loginId + '/usul-izin',
+        `${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${loginId}/usul-izin`,
         {
           izinCategoryId: selectedJenisCutiId,
           startDate: dayjs(startDate).format('YYYY-MM-DD'),
@@ -141,7 +145,7 @@ const TambahIzinModal = (props) => {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            apikey: import.meta.env.VITE_API_KEY,
+            Authorization: `Bearer ${keycloak.token}`,
           },
         },
       )

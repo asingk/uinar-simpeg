@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Page, Text, View, Document, StyleSheet, PDFViewer } from '@react-pdf/renderer'
 import { useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
+import { namaBulan } from 'src/utils'
+import axios from 'axios'
+import { KeycloakContext } from 'src/context'
 
 // Create styles
 const styles = StyleSheet.create({
@@ -55,24 +58,24 @@ function PdfPegawaiBulanan() {
   console.debug('rendering... PdfPegawaiBulanan')
 
   const { id, tahun, bulan } = useParams()
-
   const [items, setItems] = useState([])
 
+  const keycloak = useContext(KeycloakContext)
+
   useEffect(() => {
-    fetch(
-      import.meta.env.VITE_KEHADIRAN_API_URL +
-        '/pegawai/' +
-        id +
-        '/riwayat-hadir?bulan=' +
-        bulan +
-        '&tahun=' +
-        tahun,
-    )
-      .then((res) => res.json())
+    axios
+      .get(
+        `${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${id}/riwayat-kehadiran?bulan=${bulan}&tahun=${tahun}`,
+        {
+          headers: {
+            Authorization: `Bearer ${keycloak.token}`,
+          },
+        },
+      )
       .then(
-        (data) => {
+        (response) => {
           // setLoading(false)
-          setItems(data)
+          setItems(response.data.riwayatKehadiran)
           // console.log(data.riwayat)
         },
         // (error) => {
@@ -98,37 +101,6 @@ function PdfPegawaiBulanan() {
       )
       itemsTable.push(itemTable)
     })
-  }
-
-  const namaBulan = (bulan) => {
-    switch (parseInt(bulan)) {
-      case 1:
-        return 'Januari'
-      case 2:
-        return 'Februari'
-      case 3:
-        return 'Maret'
-      case 4:
-        return 'April'
-      case 5:
-        return 'Mei'
-      case 6:
-        return 'Juni'
-      case 7:
-        return 'Juli'
-      case 8:
-        return 'Agustus'
-      case 9:
-        return 'September'
-      case 10:
-        return 'Oktober'
-      case 11:
-        return 'November'
-      case 12:
-        return 'Desember'
-      default:
-        return ''
-    }
   }
 
   return (

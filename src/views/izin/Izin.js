@@ -39,15 +39,16 @@ const Izin = () => {
 
   useEffect(() => {
     axios
-      .get(
-        import.meta.env.VITE_KEHADIRAN_API_URL +
-          '/pegawai/' +
-          loginId +
-          '/usul-izin?size=' +
-          size +
-          '&page=' +
-          (currentPage - 1),
-      )
+      .get(`${import.meta.env.VITE_SIMPEG_REST_URL}/usul-izin`, {
+        params: {
+          size: size,
+          page: currentPage - 1,
+          idPegawai: loginId,
+        },
+        headers: {
+          Authorization: `Bearer ${keycloak.token}`,
+        },
+      })
       .then((response) => {
         setCurrentPage(response.data.page.number + 1)
         setTotalPages(response.data.page.totalPages)
@@ -250,23 +251,27 @@ const Izin = () => {
           Download form cuti
         </a>
       </p>
-      <BatalkanIzinModal
-        id={id}
-        visible={isOpenBatalModal}
-        setVisible={setIsOpenbatalModal}
-        done={() => {
-          setToggle(!toggle)
-          setIsOpenbatalModal(false)
-        }}
-      />
-      <TambahIzinModal
-        setVisible={setIsAdd}
-        visible={isAdd}
-        done={() => {
-          setToggle(!toggle)
-          setIsAdd(false)
-        }}
-      />
+      {isOpenBatalModal && (
+        <BatalkanIzinModal
+          id={id}
+          visible={isOpenBatalModal}
+          setVisible={setIsOpenbatalModal}
+          done={() => {
+            setToggle(!toggle)
+            setIsOpenbatalModal(false)
+          }}
+        />
+      )}
+      {isAdd && (
+        <TambahIzinModal
+          setVisible={setIsAdd}
+          visible={isAdd}
+          done={() => {
+            setToggle(!toggle)
+            setIsAdd(false)
+          }}
+        />
+      )}
     </div>
   )
 }

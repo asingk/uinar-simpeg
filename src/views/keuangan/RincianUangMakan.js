@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import {
   CAlert,
   CButton,
-  CCol,
+  CSpinner,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -14,6 +14,8 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilArrowThickLeft, cilWarning } from '@coreui/icons'
 import { useNavigate, useParams } from 'react-router-dom'
+import { KeycloakContext } from 'src/context'
+import { namaBulan } from 'src/utils'
 import dayjs from 'dayjs'
 
 const RincianUangMakan = () => {
@@ -21,16 +23,21 @@ const RincianUangMakan = () => {
 
   const [dataUangMakan, setDataUangMakan] = useState()
   const [errorUangMakan, setErrorUangmakan] = useState('')
-  const [rekapData, setRekapData] = useState()
-  const [riwayatProfil, setRiwayatProfil] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const { id } = useParams()
   const navigate = useNavigate()
+  const keycloak = useContext(KeycloakContext)
 
   useEffect(() => {
+    setLoading(true)
     setErrorUangmakan('')
     axios
-      .get(import.meta.env.VITE_KEHADIRAN_API_URL + '/rekap/uang-makan-pegawai/' + id)
+      .get(`${import.meta.env.VITE_SIMPEG_REST_URL}/rekap/uang-makan-pegawai/${id}`, {
+        headers: {
+          Authorization: `Bearer ${keycloak.token}`,
+        },
+      })
       .then(function (response) {
         // handle success
         setDataUangMakan(response.data)
@@ -43,62 +50,10 @@ const RincianUangMakan = () => {
           setErrorUangmakan(error.response.data)
         }
       })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [id])
-
-  useEffect(() => {
-    if (dataUangMakan) {
-      axios
-        .get(
-          import.meta.env.VITE_KEHADIRAN_API_URL +
-            '/pegawai/' +
-            dataUangMakan?.nip +
-            '/riwayat-profil',
-          {
-            params: {
-              tahun: dataUangMakan?.tahun,
-              bulan: dataUangMakan?.bulan,
-            },
-          },
-        )
-        .then(function (response) {
-          // handle success
-          setRiwayatProfil(response.data)
-        })
-        .catch(function (error) {
-          // handle error
-          // console.log(error)
-          if (error.response) {
-            console.log(error.response.data)
-            // setErrorUangmakan(error.response.data)
-          }
-        })
-    }
-  }, [dataUangMakan])
-
-  useEffect(() => {
-    if (dataUangMakan && riwayatProfil.length > 0) {
-      axios
-        .get(import.meta.env.VITE_KEHADIRAN_API_URL + '/rekap/uang-makan', {
-          params: {
-            tahun: dataUangMakan?.tahun,
-            bulan: dataUangMakan?.bulan,
-            unitGajiId: riwayatProfil[0].unitGaji,
-          },
-        })
-        .then(function (response) {
-          // handle success
-          setRekapData(response.data)
-        })
-        .catch(function (error) {
-          // handle error
-          // console.log(error)
-          if (error.response) {
-            console.log(error.response.data)
-            // setErrorUangmakan(error.response.data)
-          }
-        })
-    }
-  }, [dataUangMakan, riwayatProfil])
 
   // Create our number formatter.
   const formatter = new Intl.NumberFormat('id-ID', {
@@ -111,8 +66,15 @@ const RincianUangMakan = () => {
   })
 
   let uangMakan
-
-  if (errorUangMakan) {
+  if (loading) {
+    uangMakan = (
+      <div className="d-flex justify-content-center">
+        <CSpinner role="status">
+          <span className="visually-hidden">Loading...</span>
+        </CSpinner>
+      </div>
+    )
+  } else if (errorUangMakan) {
     uangMakan = (
       <CAlert color="warning" className="d-flex align-items-center">
         <CIcon icon={cilWarning} className="flex-shrink-0 me-2" width={24} height={24} />
@@ -154,18 +116,17 @@ const RincianUangMakan = () => {
   return (
     <>
       <h1 className="display-6 text-center">
-        Uang Makan Bulan {dataUangMakan?.bulan} {dataUangMakan?.tahun}
+        Uang Makan {namaBulan(dataUangMakan?.bulan)} {dataUangMakan?.tahun}
       </h1>
       <CButton className="mb-3" color="secondary" onClick={() => navigate('/keuangan/uang-makan')}>
         <CIcon icon={cilArrowThickLeft} />
       </CButton>
       {uangMakan}
-      <CCol className="text-center mt-3">
-        <p>
-          Direkap pada {dayjs(rekapData?.lastModifiedDate).format('D/M/YYYY')} oleh{' '}
-          {rekapData?.lastModifiedBy}
-        </p>
-      </CCol>
+      {dataUangMakan?.createdDate && (
+        <div className="text-center mt-3">
+          <p>Direkap pada {dayjs(dataUangMakan.createdDate).format('D/M/YYYY')}</p>
+        </div>
+      )}
     </>
   )
 }

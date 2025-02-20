@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { CAlert, CCol, CRow, CSpinner, CTable } from '@coreui/react-pro'
 import SelectTahun from '../../components/SelectTahun'
+import { KeycloakContext } from 'src/context'
+import axios from 'axios'
 
 const GantiHariKerja = () => {
   console.debug('rendering... GantiHariKerja')
@@ -14,6 +16,8 @@ const GantiHariKerja = () => {
   const [data, setData] = useState([])
   const [errorMessage, setErrorMessage] = useState()
 
+  const keycloak = useContext(KeycloakContext)
+
   useEffect(() => {
     setTahun(new Date().getFullYear())
   }, [])
@@ -23,18 +27,21 @@ const GantiHariKerja = () => {
     setError(false)
     setErrorMessage()
     if (tahun) {
-      fetch(import.meta.env.VITE_KEHADIRAN_API_URL + '/hari-libur-tapi-kerja?tahun=' + tahun)
-        .then((response) => response.json())
-        .then(
-          (data) => {
-            setLoading(false)
-            setData(data)
+      axios
+        .get(`${import.meta.env.VITE_SIMPEG_REST_URL}/hari-libur-tapi-kerja?tahun=${tahun}`, {
+          headers: {
+            Authorization: `Bearer ${keycloak.token}`,
           },
-          (error) => {
-            setLoading(false)
-            setError(error)
-          },
-        )
+        })
+        .then((response) => {
+          setData(response.data.hariLiburTapiKerja)
+        })
+        .catch((e) => {
+          setError(e)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
     }
   }, [tahun])
 
