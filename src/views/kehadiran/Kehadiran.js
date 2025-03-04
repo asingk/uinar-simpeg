@@ -185,7 +185,7 @@ const Kehadiran = () => {
         </CCol>
         {!data?.ramadhan ? (
           <a
-            href={import.meta.env.VITE_CDN_URL + '/kehadiran/SE_Jam_Kerja_2023.pdf'}
+            href={import.meta.env.VITE_CDN_URL + '/kehadiran/SE_Jam_Kerja.pdf'}
             target="_blank"
             rel="noreferrer"
           >
@@ -193,7 +193,7 @@ const Kehadiran = () => {
           </a>
         ) : (
           <a
-            href={import.meta.env.VITE_CDN_URL + '/kehadiran/SE_Jam_Kerja_Ramadhan_2023.pdf'}
+            href={import.meta.env.VITE_CDN_URL + '/kehadiran/SE_Jam_Kerja_Ramadhan.pdf'}
             target="_blank"
             rel="noreferrer"
           >
