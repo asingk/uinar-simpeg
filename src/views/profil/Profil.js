@@ -95,7 +95,7 @@ const Profil = () => {
         </CCol>
       </CRow>
       <CAccordion className="mb-3">
-        {data.pegawai.statusPegawai.isSync && (
+        {data.pegawai.statusPegawai.isSync && loginId === data.pegawai.id && (
           <CAccordionItem itemKey={1}>
             <CAccordionHeader>Alamat</CAccordionHeader>
             <CAccordionBody>
