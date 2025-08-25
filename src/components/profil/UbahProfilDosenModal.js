@@ -24,7 +24,6 @@ const UPSERT_PEGAWAI_PROFIL_DOSEN = gql`
 `
 
 const UbahProfilDosenModal = (props) => {
-  const [nidn, setNidn] = useState(props.pegawai?.dosen?.nidn)
   const [sintaId, setSintaId] = useState(props.pegawai?.dosen?.sintaId)
   const [scopusId, setScopusId] = useState(props.pegawai?.dosen?.scopusId)
   const [wosId, setWosId] = useState(props.pegawai?.dosen?.wosId)
@@ -40,7 +39,6 @@ const UbahProfilDosenModal = (props) => {
         variables: {
           pegawaiId: props.pegawai.id,
           input: {
-            nidn: nidn,
             sintaId: sintaId,
             scopusId: scopusId,
             wosId: wosId,
@@ -76,17 +74,6 @@ const UbahProfilDosenModal = (props) => {
 
         <CModalBody>
           <>
-            <CFormInput
-              type="text"
-              id="nidnInput"
-              defaultValue={nidn}
-              floatingClassName="mb-3"
-              floatingLabel="NIDN"
-              placeholder="NDIN"
-              onChange={(e) => {
-                setNidn(e.target.value)
-              }}
-            />
             <CFormInput
               type="text"
               id="sintaInput"
