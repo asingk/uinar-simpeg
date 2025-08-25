@@ -31,6 +31,11 @@ const _nav = [
     items: [
       {
         component: CNavItem,
+        name: 'Gaji',
+        to: '/keuangan/gaji',
+      },
+      {
+        component: CNavItem,
         name: 'Uang Makan',
         to: '/keuangan/uang-makan',
       },

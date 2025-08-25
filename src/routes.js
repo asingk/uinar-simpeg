@@ -3,6 +3,8 @@ import { Translation } from 'react-i18next'
 
 const Profil = React.lazy(() => import('./views/profil/Profil'))
 const Kehadiran = React.lazy(() => import('./views/kehadiran/Kehadiran'))
+const Gaji = React.lazy(() => import('./views/keuangan/Gaji'))
+const RincianGaji = React.lazy(() => import('./views/keuangan/RincianGaji'))
 const UangMakan = React.lazy(() => import('./views/keuangan/UangMakan'))
 const RincianUangMakan = React.lazy(() => import('./views/keuangan/RincianUangMakan'))
 const RemunP1 = React.lazy(() => import('./views/keuangan/RemunP1'))
@@ -38,6 +40,13 @@ const routes = [
     path: '/keuangan',
     name: <Translation>{(t) => t('Keuangan')}</Translation>,
     element: UangMakan,
+    exact: true,
+  },
+  { path: '/keuangan/gaji', name: 'Gaji', element: Gaji },
+  {
+    path: '/keuangan/gaji/:id',
+    name: 'Rincian Gaji',
+    element: RincianGaji,
     exact: true,
   },
   { path: '/keuangan/uang-makan', name: 'Uang Makan', element: UangMakan },
