@@ -25,7 +25,23 @@ const Pribadi = ({ pegawai }) => {
         </CRow>
       )}
       <CRow xs={{ cols: 1, gutter: 3 }} lg={{ cols: 2, gutter: 3 }}>
+        {pegawai.statusPegawai.isSync && loginId === pegawai.id && (
+          <CCol>
+            <CRow>
+              <CCol sm={3}>NIK</CCol>
+              <CCol sm={9}>{pegawai.nik}</CCol>
+            </CRow>
+          </CCol>
+        )}
         {pegawai.statusPegawai.isSync && (
+          <CCol>
+            <CRow>
+              <CCol sm={3}>NUPTK</CCol>
+              <CCol sm={9}>{pegawai.nuptk}</CCol>
+            </CRow>
+          </CCol>
+        )}
+        {pegawai.statusPegawai.isSync && loginId === pegawai.id && (
           <CCol>
             <CRow>
               <CCol sm={3}>Tempat Lahir</CCol>
@@ -33,7 +49,7 @@ const Pribadi = ({ pegawai }) => {
             </CRow>
           </CCol>
         )}
-        {pegawai.statusPegawai.isSync && (
+        {pegawai.statusPegawai.isSync && loginId === pegawai.id && (
           <CCol>
             <CRow>
               <CCol sm={3}>Tanggal Lahir</CCol>
@@ -43,7 +59,7 @@ const Pribadi = ({ pegawai }) => {
             </CRow>
           </CCol>
         )}
-        {pegawai.statusPegawai.isSync && (
+        {pegawai.statusPegawai.isSync && loginId === pegawai.id && (
           <CCol>
             <CRow>
               <CCol sm={3}>Jenis Kelamin</CCol>
@@ -51,7 +67,7 @@ const Pribadi = ({ pegawai }) => {
             </CRow>
           </CCol>
         )}
-        {pegawai.statusPegawai.isSync && (
+        {pegawai.statusPegawai.isSync && loginId === pegawai.id && (
           <CCol>
             <CRow>
               <CCol sm={3}>Agama</CCol>
@@ -59,7 +75,7 @@ const Pribadi = ({ pegawai }) => {
             </CRow>
           </CCol>
         )}
-        {pegawai.statusPegawai.isSync && (
+        {pegawai.statusPegawai.isSync && loginId === pegawai.id && (
           <CCol>
             <CRow>
               <CCol sm={3}>Status Kawin</CCol>
@@ -67,7 +83,7 @@ const Pribadi = ({ pegawai }) => {
             </CRow>
           </CCol>
         )}
-        {pegawai.statusPegawai.isSync && (
+        {pegawai.statusPegawai.isSync && loginId === pegawai.id && (
           <CCol>
             <CRow>
               <CCol sm={3}>No. HP</CCol>
@@ -75,7 +91,7 @@ const Pribadi = ({ pegawai }) => {
             </CRow>
           </CCol>
         )}
-        {pegawai.statusPegawai.isSync && (
+        {pegawai.statusPegawai.isSync && loginId === pegawai.id && (
           <CCol>
             <CRow>
               <CCol sm={3}>Email</CCol>
@@ -96,14 +112,6 @@ const Pribadi = ({ pegawai }) => {
               <CCol sm={9}>
                 {pegawai.tmtKgbYad ? dayjs(pegawai.tmtKgbYad).format('D/M/YYYY') : ''}
               </CCol>
-            </CRow>
-          </CCol>
-        )}
-        {pegawai.statusPegawai.isSync && (
-          <CCol>
-            <CRow>
-              <CCol sm={3}>Usia Pensiun</CCol>
-              <CCol sm={9}>{pegawai.usiaPensiun || ''}</CCol>
             </CRow>
           </CCol>
         )}
@@ -155,6 +163,8 @@ Pribadi.fragments = {
   entry: gql`
     fragment PribadiFragment on Pegawai {
       nama
+      nik
+      nuptk
       tempatLahir
       tglLahir
       jenisKelamin
@@ -167,7 +177,6 @@ Pribadi.fragments = {
       }
       tmtPangkatYad
       tmtKgbYad
-      usiaPensiun
       tmtPensiun
       unitGaji {
         id
