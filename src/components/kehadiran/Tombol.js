@@ -10,12 +10,14 @@ import {
   CCardText,
   CCardTitle,
   CLoadingButton,
+  CToast,
+  CToastBody,
+  CToastClose,
   CToaster,
 } from '@coreui/react-pro'
 import { KeycloakContext } from 'src/context'
-import SuccessToast from 'src/components/SuccessToast'
-
-const successToast = <SuccessToast message={'Kehadiran Anda sudah terekam'} />
+import { cilCheckCircle } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 
 const Tombol = (props) => {
   const [processing, setProcessing] = useState(false)
@@ -39,6 +41,18 @@ const Tombol = (props) => {
     }
     setErrorMessage('')
     setProcessing(true)
+
+    const successToast = (
+      <CToast color="success" className="text-white align-items-center">
+        <div className="d-flex">
+          <CToastBody>
+            <CIcon icon={cilCheckCircle} className="flex-shrink-0 me-2" />
+            Kehadiran Anda sudah terekam
+          </CToastBody>
+          <CToastClose className="me-2 m-auto" white />
+        </div>
+      </CToast>
+    )
 
     await axios
       .post(
