@@ -26,50 +26,74 @@ const Dosen = ({ pegawai }) => {
       <CRow xs={{ cols: 1, gutter: 3 }} lg={{ cols: 2, gutter: 3 }}>
         <CCol>
           <CRow>
-            <CCol sm={3}>Fakultas</CCol>
-            <CCol sm={9}>{pegawai.dosen?.prodi?.fakultas.nama}</CCol>
+            <CCol sm={4}>Fakultas</CCol>
+            <CCol sm={8}>{pegawai.dosen?.prodi?.fakultas.nama}</CCol>
           </CRow>
         </CCol>
         <CCol>
           <CRow>
-            <CCol sm={3}>Program Studi</CCol>
-            <CCol sm={9}>{pegawai.dosen?.prodi?.nama}</CCol>
+            <CCol sm={4}>Program Studi</CCol>
+            <CCol sm={8}>{pegawai.dosen?.prodi?.nama}</CCol>
           </CRow>
         </CCol>
         <CCol>
           <CRow>
-            <CCol sm={3}>NIDN</CCol>
-            <CCol sm={9}>{pegawai.dosen?.nidn}</CCol>
+            <CCol sm={4}>NIDN</CCol>
+            <CCol sm={8}>{pegawai.dosen?.nidn}</CCol>
           </CRow>
         </CCol>
         <CCol>
           <CRow>
-            <CCol sm={3}>ID Sinta</CCol>
-            <CCol sm={9}>{pegawai.dosen?.sintaId}</CCol>
+            <CCol sm={4}>ID Sinta</CCol>
+            <CCol sm={8}>{pegawai.dosen?.sintaId}</CCol>
           </CRow>
         </CCol>
         <CCol>
           <CRow>
-            <CCol sm={3}>ID Scopus</CCol>
-            <CCol sm={9}>{pegawai.dosen?.scopusId}</CCol>
+            <CCol sm={4}>ID Scopus</CCol>
+            <CCol sm={8}>{pegawai.dosen?.scopusId}</CCol>
           </CRow>
         </CCol>
         <CCol>
           <CRow>
-            <CCol sm={3}>ID WOS</CCol>
-            <CCol sm={9}>{pegawai.dosen?.wosId}</CCol>
+            <CCol sm={4}>ID WOS</CCol>
+            <CCol sm={8}>{pegawai.dosen?.wosId}</CCol>
           </CRow>
         </CCol>
         <CCol>
           <CRow>
-            <CCol sm={3}>ID Orcid</CCol>
-            <CCol sm={9}>{pegawai.dosen?.orcidId}</CCol>
+            <CCol sm={4}>ID Orcid</CCol>
+            <CCol sm={8}>{pegawai.dosen?.orcidId}</CCol>
           </CRow>
         </CCol>
         <CCol>
           <CRow>
-            <CCol sm={3}>ID Google Scholar</CCol>
-            <CCol sm={9}>{pegawai.dosen?.gsId}</CCol>
+            <CCol sm={4}>ID Google Scholar</CCol>
+            <CCol sm={8}>{pegawai.dosen?.gsId}</CCol>
+          </CRow>
+        </CCol>
+        <CCol>
+          <CRow>
+            <CCol sm={4}>SK Sertifikasi Serdos</CCol>
+            <CCol sm={8}>{pegawai.dosen?.serdosSkSertifikat}</CCol>
+          </CRow>
+        </CCol>
+        <CCol>
+          <CRow>
+            <CCol sm={4}>Bidang Studi Serdos</CCol>
+            <CCol sm={8}>{pegawai.dosen?.serdosBidangStudi}</CCol>
+          </CRow>
+        </CCol>
+        <CCol>
+          <CRow>
+            <CCol sm={4}>Nomor Registrasi Serdos</CCol>
+            <CCol sm={8}>{pegawai.dosen?.serdosNoRegistrasi}</CCol>
+          </CRow>
+        </CCol>
+        <CCol>
+          <CRow>
+            <CCol sm={4}>Serdos Tahun Sertifikasi</CCol>
+            <CCol sm={8}>{pegawai.dosen?.serdosTahunSertifikasi}</CCol>
           </CRow>
         </CCol>
       </CRow>
@@ -94,6 +118,10 @@ Dosen.fragments = {
         wosId
         orcidId
         gsId
+        serdosSkSertifikat
+        serdosBidangStudi
+        serdosNoRegistrasi
+        serdosTahunSertifikasi
         prodi {
           id
           nama
