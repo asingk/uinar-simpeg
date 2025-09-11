@@ -15,7 +15,21 @@ const Alamat = ({ pegawai }) => {
             <CFormInput
               type="text"
               id="staticAlamatDesc"
-              defaultValue={pegawai?.alamat?.deskripsi || ''}
+              defaultValue={pegawai?.alamat?.deskripsi1 || ''}
+              readOnly
+              plainText
+            />
+          </CCol>
+        </CRow>
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="staticAlamatDesc" className="col-sm-3 col-form-label">
+            Kelurahan
+          </CFormLabel>
+          <CCol sm={9}>
+            <CFormInput
+              type="text"
+              id="staticAlamatDesc"
+              defaultValue={pegawai?.alamat?.deskripsi2 || ''}
               readOnly
               plainText
             />
@@ -79,7 +93,8 @@ Alamat.fragments = {
   entry: gql`
     fragment AlamatFragment on Pegawai {
       alamat {
-        deskripsi
+        deskripsi1
+        deskripsi2
         kabKota
         provinsi
         kodePos
