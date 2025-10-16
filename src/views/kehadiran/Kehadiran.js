@@ -6,6 +6,7 @@ import Laporan from '../../components/kehadiran/Laporan'
 import Tombol from '../../components/kehadiran/Tombol'
 import SelectBulanTahunKehadiran from '../../components/kehadiran/SelectBulanTahunKehadiran'
 import { KeycloakContext } from 'src/context'
+import Survey from 'src/components/kehadiran/Survey'
 
 const GET_PEGAWAI_PROFIL = gql`
   query PegawaiProfil($id: ID!) {
@@ -74,6 +75,47 @@ const Kehadiran = () => {
   const [seninKamis, setSeninKamis] = useState()
   const [jumat, setJumat] = useState()
   const [error, setError] = useState('')
+  const [surveyCompleted, setSurveyCompleted] = useState(false)
+  const [checkingSurvey, setCheckingSurvey] = useState(true)
+  const [hasSurvey, setHasSurvey] = useState(true)
+
+  // Cek status survey hari ini hanya jika status PULANG
+  useEffect(() => {
+    const checkTodaySurveyAnswer = async () => {
+      if (!loginId || data?.status !== 'PULANG') {
+        // Jika bukan status PULANG, set surveyCompleted true agar tidak memblokir
+        setSurveyCompleted(true)
+        setCheckingSurvey(false)
+        return
+      }
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${loginId}/findTodayAnswer`,
+          {
+            headers: {
+              Authorization: `Bearer ${keycloak.token}`,
+            },
+          },
+        )
+        // Jika ada data response dengan id, berarti sudah isi survey hari ini
+        setSurveyCompleted(!!response.data?.id)
+      } catch (err) {
+        // Jika error 404 atau tidak ada data, berarti belum isi survey
+        if (err.response?.status === 404) {
+          setSurveyCompleted(false)
+        } else {
+          console.error('Error checking survey:', err)
+          // Jika error lain, anggap sudah isi survey agar tidak memblokir
+          setSurveyCompleted(true)
+        }
+      } finally {
+        setCheckingSurvey(false)
+      }
+    }
+
+    checkTodaySurveyAnswer()
+  }, [loginId, keycloak.token, data?.status])
 
   useEffect(() => {
     const getStatusSaatIni = async () => {
@@ -122,6 +164,15 @@ const Kehadiran = () => {
     if (!data) getStatusSaatIni()
   }, [data, keycloak.token])
 
+  const handleSurveySubmitSuccess = () => {
+    setSurveyCompleted(true)
+  }
+
+  const handleNoSurvey = () => {
+    setHasSurvey(false)
+    setCheckingSurvey(false)
+  }
+
   const { data: dataPeg } = useQuery(GET_PEGAWAI_PROFIL, {
     variables: { id: loginId },
   })
@@ -139,7 +190,18 @@ const Kehadiran = () => {
     <>
       <CRow>
         <CCol className="mb-3">
-          <Tombol clicked={refreshAction} status={data?.status} pegawai={dataPeg?.pegawai} />
+          {/* Tampilkan Survey hanya jika status PULANG, ada survey, dan belum diisi */}
+          {!checkingSurvey && data?.status === 'PULANG' && hasSurvey && !surveyCompleted ? (
+            <Survey
+              nip={loginId}
+              onSubmitSuccess={handleSurveySubmitSuccess}
+              onNoSurvey={handleNoSurvey}
+            />
+          ) : (
+            !checkingSurvey && (
+              <Tombol clicked={refreshAction} status={data?.status} pegawai={dataPeg?.pegawai} />
+            )
+          )}
           {error && <CAlert color="danger">Error: {error}</CAlert>}
         </CCol>
       </CRow>
