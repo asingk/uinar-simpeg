@@ -7,6 +7,7 @@ const Gaji = React.lazy(() => import('./views/keuangan/Gaji'))
 const RincianGaji = React.lazy(() => import('./views/keuangan/RincianGaji'))
 const UangMakan = React.lazy(() => import('./views/keuangan/UangMakan'))
 const RincianUangMakan = React.lazy(() => import('./views/keuangan/RincianUangMakan'))
+const RincianPotonganGaji = React.lazy(() => import('./views/keuangan/RincianPotonganGaji'))
 const RemunP1 = React.lazy(() => import('./views/keuangan/RemunP1'))
 const RincianRemunP1 = React.lazy(() => import('./views/keuangan/RincianRemunP1'))
 const Izin = React.lazy(() => import('./views/izin/Izin'))
@@ -47,6 +48,12 @@ const routes = [
     path: '/keuangan/gaji/:id',
     name: 'Rincian Gaji',
     element: RincianGaji,
+    exact: true,
+  },
+  {
+    path: '/keuangan/potongan-gaji-pegawai/:id',
+    name: 'Rincian Potongan Gaji',
+    element: RincianPotonganGaji,
     exact: true,
   },
   { path: '/keuangan/uang-makan', name: 'Uang Makan', element: UangMakan },

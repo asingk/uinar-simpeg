@@ -1,16 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
-import {
-  CAlert,
-  CButton,
-  CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-} from '@coreui/react-pro'
+import { CAlert, CButton, CSpinner } from '@coreui/react-pro'
 import CIcon from '@coreui/icons-react'
 import { cilArrowThickLeft, cilWarning } from '@coreui/icons'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -145,8 +135,12 @@ const RincianGaji = () => {
         <hr />
         <h4>Potongan</h4>
         <dl className="row">
-          <dt className="col-sm-3">IWP</dt>
-          <dd className="col-sm-9">{formatter.format(dataGaji?.iwp)}</dd>
+          {dataGaji?.iwp > 0 && (
+            <>
+              <dt className="col-sm-3">IWP</dt>
+              <dd className="col-sm-9">{formatter.format(dataGaji?.iwp)}</dd>
+            </>
+          )}
 
           {dataGaji?.pph > 0 && (
             <>
