@@ -171,12 +171,14 @@ const RincianGaji = () => {
       </CButton>
       {gaji}
       {dataGaji?.createdDate && (
-        <div className="text-center mt-3">
-          <p>
-            Diunggah oleh {dataGaji.createdBy} pada {dayjs(dataGaji.createdDate).format('D/M/YYYY')}
-          </p>
+        <div className="text-center mt-3 text-muted">
+          <small>
+            Diunggah oleh {dataGaji.createdBy} pada{' '}
+            {dayjs(dataGaji.createdDate).format('DD/MM/YYYY HH:mm')}
+          </small>
         </div>
       )}
+      <p className="text-center">Jika terdapat perbedaan data, silahkan hubungi bagian keuangan.</p>
     </>
   )
 }

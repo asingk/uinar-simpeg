@@ -8,8 +8,9 @@ const RincianGaji = React.lazy(() => import('./views/keuangan/RincianGaji'))
 const UangMakan = React.lazy(() => import('./views/keuangan/UangMakan'))
 const RincianUangMakan = React.lazy(() => import('./views/keuangan/RincianUangMakan'))
 const RincianPotonganGaji = React.lazy(() => import('./views/keuangan/RincianPotonganGaji'))
-const RemunP1 = React.lazy(() => import('./views/keuangan/RemunP1'))
-const RincianRemunP1 = React.lazy(() => import('./views/keuangan/RincianRemunP1'))
+const RemunP1 = React.lazy(() => import('./views/keuangan/Remun'))
+const RincianRemun = React.lazy(() => import('./views/keuangan/RincianRemun'))
+const RincianSelisihRemun = React.lazy(() => import('./views/keuangan/RincianSelisihRemun'))
 const Izin = React.lazy(() => import('./views/izin/Izin'))
 const StrukturOrg = React.lazy(() => import('./views/struktur-org/StrukturSatker'))
 const StrukturUker = React.lazy(() => import('./views/struktur-org/StrukturUker'))
@@ -63,11 +64,17 @@ const routes = [
     element: RincianUangMakan,
     exact: true,
   },
-  { path: '/keuangan/remun-p1', name: 'Remun P1', element: RemunP1 },
+  { path: '/keuangan/remun', name: 'Remun', element: RemunP1 },
   {
-    path: '/keuangan/remun-p1/:id',
-    name: 'Rincian Remun P1',
-    element: RincianRemunP1,
+    path: '/keuangan/remun/:id',
+    name: 'Rincian Remun',
+    element: RincianRemun,
+    exact: true,
+  },
+  {
+    path: '/keuangan/selisih-remun/:id',
+    name: 'Rincian Selisih Remun',
+    element: RincianSelisihRemun,
     exact: true,
   },
   {

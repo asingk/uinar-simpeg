@@ -17,7 +17,7 @@ const Pribadi = ({ pegawai }) => {
     <CContainer>
       {loginId === pegawai.id && (
         <CRow className="justify-content-end mb-2">
-          <CCol lg="1" md="2" xs="4">
+          <CCol lg="2" md="4" xs="6">
             <CButton color={'warning'} onClick={() => setBasicModal(true)}>
               <CIcon icon={cilPen} /> Edit
             </CButton>

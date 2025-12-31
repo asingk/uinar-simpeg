@@ -41,8 +41,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Remun P1',
-        to: '/keuangan/remun-p1',
+        name: 'Remun',
+        to: '/keuangan/remun',
       },
     ],
   },

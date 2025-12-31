@@ -1,1 +1,646 @@
 // Here you can add other styles
+
+// ========================================
+// Profile Page Custom Styles with Dark Mode
+// ========================================
+
+// Gradient background for card headers
+.bg-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+}
+
+// Dark mode gradients
+[data-coreui-theme="dark"] {
+  .bg-gradient {
+    background: linear-gradient(135deg, #4c5fd7 0%, #5a3d7a 100%) !important;
+  }
+
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #4c5fd7 0%, #2a1854 100%) !important;
+  }
+
+  .bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+  }
+}
+
+// Enhanced shadow utilities with dark mode
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.075) !important;
+
+  [data-coreui-theme="dark"] & {
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3) !important;
+  }
+}
+
+.shadow-md {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1) !important;
+
+  [data-coreui-theme="dark"] & {
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
+.shadow-lg {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+
+  [data-coreui-theme="dark"] & {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
+// Smooth transitions for cards
+.card {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+
+  [data-coreui-theme="dark"] & {
+    background-color: var(--cui-card-bg, #2c3034);
+    border-color: var(--cui-border-color, #3c4146);
+
+    &:hover {
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5) !important;
+    }
+  }
+}
+
+// Card with light background - dark mode variant
+.card.bg-light {
+  [data-coreui-theme="dark"] & {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Accordion custom styling with dark mode
+.accordion-item {
+  transition: all 0.3s ease;
+  border-radius: 0.375rem !important;
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+  }
+
+  [data-coreui-theme="dark"] & {
+    background-color: var(--cui-card-bg, #2c3034);
+    border-color: var(--cui-border-color, #3c4146);
+
+    &:hover {
+      box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.4);
+    }
+  }
+}
+
+.accordion-button {
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+
+  &:not(.collapsed) {
+    background-color: #f8f9fa;
+    color: var(--cui-primary, #321fdb);
+    box-shadow: none;
+  }
+
+  &:focus {
+    box-shadow: none;
+    border-color: rgba(0, 0, 0, 0.125);
+  }
+
+  [data-coreui-theme="dark"] & {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--cui-body-color, #fff);
+
+    &:not(.collapsed) {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--cui-primary, #6c63ff);
+    }
+
+    &:focus {
+      border-color: rgba(255, 255, 255, 0.125);
+    }
+  }
+}
+
+.accordion-body {
+  padding: 1.25rem;
+
+  [data-coreui-theme="dark"] & {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Avatar styling enhancements with dark mode
+.c-avatar {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+
+  [data-coreui-theme="dark"] & {
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.4);
+  }
+}
+
+// Profile card specific styles
+.profile-card {
+  .card-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .card-body {
+    padding: 2rem 1.25rem;
+  }
+
+  [data-coreui-theme="dark"] & {
+    background-color: var(--cui-card-bg, #2c3034);
+  }
+}
+
+// Badge enhancements with dark mode
+.badge {
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+// Light badge in dark mode
+.badge.bg-light {
+  [data-coreui-theme="dark"] & {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #fff !important;
+  }
+}
+
+// Icon styling with dark mode
+.icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background-color: rgba(50, 31, 219, 0.1);
+
+  &.icon-success {
+    background-color: rgba(46, 184, 92, 0.1);
+  }
+
+  &.icon-info {
+    background-color: rgba(51, 153, 255, 0.1);
+  }
+
+  &.icon-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+  }
+
+  [data-coreui-theme="dark"] & {
+    background-color: rgba(108, 99, 255, 0.15);
+
+    &.icon-success {
+      background-color: rgba(46, 184, 92, 0.15);
+    }
+
+    &.icon-info {
+      background-color: rgba(51, 153, 255, 0.15);
+    }
+
+    &.icon-warning {
+      background-color: rgba(255, 193, 7, 0.15);
+    }
+  }
+
+  // Make icon wrapper smaller on mobile
+  @media (max-width: 767.98px) {
+    width: 2rem;
+    height: 2rem;
+
+    svg {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}
+
+// Responsive padding for cards on mobile
+@media (max-width: 767.98px) {
+  .profile-card {
+    .card-body {
+      padding: 1rem !important;
+
+      &.py-3 {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+      }
+
+      &.px-3 {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+      }
+    }
+  }
+
+  // Reduce spacing on mobile
+  .bg-light .card-body {
+    padding: 0.75rem !important;
+  }
+
+  // Adjust margins for better mobile layout
+  .mb-2 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .gap-2 {
+    gap: 0.5rem !important;
+  }
+}
+
+// Emoji as icon replacement on mobile
+@media (max-width: 767.98px) {
+  // Ensure emojis are properly sized
+  .d-md-none {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+}
+
+// Text colors for dark mode
+[data-coreui-theme="dark"] {
+  .text-dark {
+    color: #e4e7ea !important;
+  }
+
+  .text-medium-emphasis {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .text-success {
+    color: #4dbd74 !important;
+  }
+
+  .text-primary {
+    color: #6c63ff !important;
+  }
+
+  .text-info {
+    color: #63c2de !important;
+  }
+}
+
+// Sticky sidebar enhancement
+.sticky-top {
+  transition: all 0.3s ease;
+}
+
+// Responsive spacing
+@media (max-width: 991.98px) {
+  .profile-card .card-body {
+    padding: 1.5rem 1rem;
+  }
+
+  .sticky-top {
+    position: relative !important;
+    top: 0 !important;
+  }
+}
+
+// Loading state styling with dark mode
+.loading-wrapper {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+// List group enhancements with dark mode
+.list-group-item {
+  border: none;
+  padding: 0.75rem 1rem;
+
+  &:first-child {
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+  }
+
+  [data-coreui-theme="dark"] & {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--cui-body-color, #fff);
+  }
+}
+
+// Card hover effect for interactive elements
+.card-interactive {
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+  }
+
+  [data-coreui-theme="dark"] & {
+    &:hover {
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.6) !important;
+    }
+  }
+}
+
+// Text utilities with dark mode
+.text-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+
+  [data-coreui-theme="dark"] & {
+    background: linear-gradient(135deg, #8b7fff 0%, #9d6ebe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+// Profile info card with dark mode
+.info-card {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border: none;
+
+  &.success-gradient {
+    background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+  }
+
+  &.primary-gradient {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  }
+
+  [data-coreui-theme="dark"] & {
+    background: linear-gradient(135deg, #2c3034 0%, #3c4146 100%);
+
+    &.success-gradient {
+      background: linear-gradient(135deg, #1e7e34 0%, #28a745 100%);
+    }
+
+    &.primary-gradient {
+      background: linear-gradient(135deg, #4c5fd7 0%, #764ba2 100%);
+    }
+  }
+}
+
+// Border utilities with dark mode
+.border-start-primary {
+  border-left: 4px solid var(--cui-primary, #321fdb) !important;
+
+  [data-coreui-theme="dark"] & {
+    border-left-color: #6c63ff !important;
+  }
+}
+
+.border-start-success {
+  border-left: 4px solid var(--cui-success, #2eb85c) !important;
+
+  [data-coreui-theme="dark"] & {
+    border-left-color: #4dbd74 !important;
+  }
+}
+
+.border-start-info {
+  border-left: 4px solid var(--cui-info, #39f) !important;
+
+  [data-coreui-theme="dark"] & {
+    border-left-color: #63c2de !important;
+  }
+}
+
+// Animation utilities
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+// Alert dark mode support
+.alert {
+  [data-coreui-theme="dark"] & {
+    border-color: rgba(255, 255, 255, 0.1);
+
+    &.alert-danger {
+      background-color: rgba(229, 83, 83, 0.2);
+      border-color: rgba(229, 83, 83, 0.3);
+      color: #f5c6cb;
+    }
+  }
+}
+
+// Print optimization
+@media print {
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #dee2e6 !important;
+  }
+
+  .accordion-button {
+    display: none;
+  }
+
+  .accordion-collapse {
+    display: block !important;
+  }
+}
+
+// Accordion Profile Enhancement
+.accordion-profile {
+  .accordion-header {
+    strong {
+      font-size: 1rem;
+
+      [data-coreui-theme="dark"] & {
+        color: var(--cui-body-color, #fff);
+      }
+    }
+  }
+}
+
+// Enhanced accordion header styling
+.accordion-button {
+  &:not(.collapsed) {
+    &::after {
+      transform: rotate(180deg);
+    }
+  }
+
+  // Remove bg-white hardcoded
+  &.bg-white {
+    background-color: transparent !important;
+
+    [data-coreui-theme="dark"] & {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+    }
+  }
+}
+
+// Container spacing enhancement
+.px-4.py-3 {
+  [data-coreui-theme="dark"] & {
+    background-color: transparent;
+  }
+}
+
+// Smooth page transitions
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-card,
+.accordion-item {
+  animation: slideInUp 0.4s ease-out;
+  animation-fill-mode: both;
+
+  @for $i from 1 through 6 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}
+
+// Loading state enhancement
+.loading-wrapper {
+  .spinner-border {
+    [data-coreui-theme="dark"] & {
+      color: var(--cui-primary, #6c63ff) !important;
+    }
+  }
+
+  .text-medium-emphasis {
+    font-size: 1rem;
+  }
+}
+
+// Alert enhancement for dark mode
+.alert {
+  border-radius: 0.5rem;
+
+  &.alert-danger {
+    .alert-heading {
+      [data-coreui-theme="dark"] & {
+        color: #f8d7da;
+      }
+    }
+  }
+}
+
+// Emoji sizing consistency
+span[style*="fontSize"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Icon wrapper in headers
+.d-flex .icon-wrapper {
+  margin-top: -2px; // Better vertical alignment
+}
+
+// Card body padding consistency
+.profile-card .card-body.p-4 {
+  @media (max-width: 575.98px) {
+    padding: 1.5rem !important;
+  }
+}
+
+// Responsive accordion spacing
+@media (max-width: 767.98px) {
+  .accordion-profile {
+    .accordion-header strong {
+      font-size: 0.95rem;
+    }
+
+    .accordion-body {
+      padding: 1rem;
+    }
+  }
+}
+
+// Enhanced focus states for accessibility
+.accordion-button:focus,
+.card:focus-within {
+  outline: 2px solid var(--cui-primary, #321fdb);
+  outline-offset: 2px;
+
+  [data-coreui-theme="dark"] & {
+    outline-color: var(--cui-primary, #6c63ff);
+  }
+}
+
+// Smooth color transitions
+.card,
+.accordion-item,
+.accordion-button,
+.badge,
+.alert {
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+// ========================================
+// Profile Sidebar Sticky Management
+// ========================================
+
+.profile-sidebar-sticky {
+  position: sticky;
+  top: 130px; // Sesuaikan dengan tinggi navbar + breadcrumb Anda
+  z-index: 10;
+  transition: all 0.3s ease;
+
+  // Remove sticky on tablet and mobile
+  @media (max-width: 991.98px) {
+    position: relative !important;
+    top: 0 !important;
+    z-index: auto;
+  }
+}
+
+// Ensure header stays on top
+[class*="header"],
+.c-header,
+.header {
+  z-index: 1030 !important;
+}
+
+// Sidebar z-index
+.sidebar {
+  z-index: 1025 !important;
+}
