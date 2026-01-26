@@ -19,13 +19,13 @@ const Laporan = (props) => {
   const [error, setError] = useState()
   const [loading, setLoading] = useState(true)
   const [riwayat, setRiwayat] = useState([])
-  const [profilRiwayat, setProfilRiwayat] = useState()
 
   const keycloak = useContext(KeycloakContext)
   const loginId = keycloak.idTokenParsed?.preferred_username
 
   useEffect(() => {
     setLoading(true)
+    setError(null)
     axios
       .get(
         `${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${loginId}/riwayat-kehadiran?bulan=${props.bulan}&tahun=${props.tahun}`,
@@ -36,31 +36,13 @@ const Laporan = (props) => {
         },
       )
       .then(function (response) {
-        setRiwayat(response.data.riwayatKehadiran.reverse())
+        setRiwayat(response.data.riwayatKehadiran)
       })
       .catch(function (error) {
         setError(error)
       })
       .finally(function () {
         setLoading(false)
-      })
-    axios
-      .get(
-        `${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${loginId}/riwayat-profil?bulan=${props.bulan}&tahun=${props.tahun}`,
-        {
-          headers: {
-            Authorization: `Bearer ${keycloak.token}`,
-          },
-        },
-      )
-      .then(function (response) {
-        // handle success
-        // console.log(response)
-        setProfilRiwayat(response.data.riwayatProfil[0])
-      })
-      .catch(function (error) {
-        // handle error
-        // console.log(error.message)
       })
   }, [props.bulan, props.tahun, loginId, props.refresh])
 
@@ -90,30 +72,28 @@ const Laporan = (props) => {
           <CTableHeaderCell scope="row">
             {dayjs(item.tanggal, 'YYYY-MM-DD').format('D/M/YYYY')}
           </CTableHeaderCell>
-          <CTableDataCell>
-            {item.keteranganDatang || (item.jamDatang ? item.jamDatang.substr(0, 5) : '-')}
-          </CTableDataCell>
-          {profilRiwayat?.jenisJabatan !== 'DS' && (
-            <CTableDataCell className={item.telatDatang !== 0 ? 'text-danger' : 'text-success'}>
-              {item.telatDatang}
-            </CTableDataCell>
-          )}
-          <CTableDataCell>
-            {item.keteranganPulang || (item.jamPulang ? item.jamPulang.substr(0, 5) : '-')}
-          </CTableDataCell>
-          {profilRiwayat?.jenisJabatan !== 'DS' && (
-            <CTableDataCell className={item.cepatPulang !== 0 ? 'text-danger' : 'text-success'}>
-              {item.cepatPulang}
-            </CTableDataCell>
-          )}
+          <CTableDataCell>{item.hari || '-'}</CTableDataCell>
+          {/*<CTableDataCell>*/}
+          {/*  {item.jadwalDatang ? item.jadwalDatang.substr(0, 5) : '-'}*/}
+          {/*</CTableDataCell>*/}
+          <CTableDataCell>{item.absenDatang ? item.absenDatang.substr(0, 5) : '-'}</CTableDataCell>
+          {/*<CTableDataCell>*/}
+          {/*  {typeof item.cepatTelatDatang === 'number' ? item.cepatTelatDatang : '-'}*/}
+          {/*</CTableDataCell>*/}
+          {/*<CTableDataCell>*/}
+          {/*  {item.jadwalPulang ? item.jadwalPulang.substr(0, 5) : '-'}*/}
+          {/*</CTableDataCell>*/}
+          <CTableDataCell>{item.absenPulang ? item.absenPulang.substr(0, 5) : '-'}</CTableDataCell>
+          {/*<CTableDataCell>*/}
+          {/*  {typeof item.cepatTelatPulang === 'number' ? item.cepatTelatPulang : '-'}*/}
+          {/*</CTableDataCell>*/}
+          <CTableDataCell>{item.keterangan || '-'}</CTableDataCell>
         </CTableRow>
       ))
     } else {
       rows = (
         <CTableRow>
-          <CTableDataCell colSpan={profilRiwayat?.jenisJabatan !== 'DS' ? 5 : 3}>
-            Tidak ada Data
-          </CTableDataCell>
+          <CTableDataCell colSpan={9}>Tidak ada Data</CTableDataCell>
         </CTableRow>
       )
     }
@@ -123,14 +103,14 @@ const Laporan = (props) => {
           <CTableHead>
             <CTableRow>
               <CTableHeaderCell scope="col">Tanggal</CTableHeaderCell>
+              <CTableHeaderCell scope="col">Hari</CTableHeaderCell>
+              {/*<CTableHeaderCell scope="col">Jadwal Datang</CTableHeaderCell>*/}
               <CTableHeaderCell scope="col">Datang</CTableHeaderCell>
-              {profilRiwayat?.jenisJabatan !== 'DS' && (
-                <CTableHeaderCell scope="col">Telat Datang (menit)</CTableHeaderCell>
-              )}
+              {/*<CTableHeaderCell scope="col">Cepat/Telat Datang (menit)</CTableHeaderCell>*/}
+              {/*<CTableHeaderCell scope="col">Jadwal Pulang</CTableHeaderCell>*/}
               <CTableHeaderCell scope="col">Pulang</CTableHeaderCell>
-              {profilRiwayat?.jenisJabatan !== 'DS' && (
-                <CTableHeaderCell scope="col">Cepat Pulang (menit)</CTableHeaderCell>
-              )}
+              {/*<CTableHeaderCell scope="col">Cepat/Telat Pulang (menit)</CTableHeaderCell>*/}
+              <CTableHeaderCell scope="col">Keterangan</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
           <CTableBody>{rows}</CTableBody>

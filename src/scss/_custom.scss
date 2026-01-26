@@ -161,6 +161,60 @@
   }
 }
 
+// Kehadiran card highlight
+.kehadiran-card {
+  border: 0;
+  box-shadow: 0 0.75rem 1.75rem rgba(76, 95, 215, 0.25) !important;
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px solid rgba(102, 126, 234, 0.35);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .card-body {
+    padding: 2rem 1.5rem;
+  }
+
+  [data-coreui-theme="dark"] & {
+    box-shadow: 0 0.75rem 1.75rem rgba(76, 95, 215, 0.4) !important;
+
+    &::before {
+      border-color: rgba(108, 99, 255, 0.4);
+    }
+  }
+}
+
+.kehadiran-card__header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #fff !important;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 0 !important;
+
+  [data-coreui-theme="dark"] & {
+    background: linear-gradient(135deg, #4c5fd7 0%, #5a3d7a 100%) !important;
+  }
+}
+
+.kehadiran-card__button {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.75rem;
+  box-shadow: 0 0.5rem 1.25rem rgba(46, 184, 92, 0.35);
+
+  [data-coreui-theme="dark"] & {
+    box-shadow: 0 0.5rem 1.25rem rgba(46, 184, 92, 0.5);
+  }
+}
+
 // Badge enhancements with dark mode
 .badge {
   padding: 0.35em 0.65em;

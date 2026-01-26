@@ -1,5 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
+import axios from 'axios'
 import {
   CAccordion,
   CAccordionBody,
@@ -21,6 +22,8 @@ import Pangkat from '../../components/profil/Pangkat'
 import JabatanKemenag from '../../components/profil/JabatanKemenag'
 import Dosen from '../../components/profil/Dosen'
 import Footer from '../../components/profil/Footer'
+import Tombol from '../../components/kehadiran/Tombol'
+import Survey from '../../components/kehadiran/Survey'
 import { useParams } from 'react-router-dom'
 import { KeycloakContext } from 'src/context'
 
@@ -64,6 +67,99 @@ const Profil = () => {
   const keycloak = useContext(KeycloakContext)
   const loginId = keycloak.idTokenParsed?.preferred_username
   const { id } = useParams()
+  const [kehadiranStatus, setKehadiranStatus] = useState()
+  const [kehadiranError, setKehadiranError] = useState('')
+  const [refreshKehadiran, setRefreshKehadiran] = useState(false)
+  const [surveyCompleted, setSurveyCompleted] = useState(false)
+  const [checkingSurvey, setCheckingSurvey] = useState(true)
+  const [hasSurvey, setHasSurvey] = useState(true)
+
+  useEffect(() => {
+    const getStatusSaatIni = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SIMPEG_REST_URL}/kehadiran/status-saat-ini`,
+          {
+            headers: {
+              Authorization: `Bearer ${keycloak.token}`,
+            },
+          },
+        )
+        setKehadiranStatus(response.data)
+        setKehadiranError('')
+      } catch (err) {
+        setKehadiranError(err.message)
+        setKehadiranStatus(null)
+      }
+    }
+
+    if (keycloak.token) getStatusSaatIni()
+  }, [keycloak.token, refreshKehadiran])
+
+  useEffect(() => {
+    const checkTodaySurveyAnswer = async () => {
+      if (!loginId || kehadiranStatus?.status !== 'PULANG') {
+        setSurveyCompleted(true)
+        setCheckingSurvey(false)
+        return
+      }
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${loginId}/findTodayAnswer`,
+          {
+            headers: {
+              Authorization: `Bearer ${keycloak.token}`,
+            },
+          },
+        )
+        setSurveyCompleted(!!response.data?.id)
+      } catch (err) {
+        if (err.response?.status === 404) {
+          setSurveyCompleted(false)
+        } else {
+          console.error('Error checking survey:', err)
+          setSurveyCompleted(true)
+        }
+      } finally {
+        setCheckingSurvey(false)
+      }
+    }
+
+    checkTodaySurveyAnswer()
+  }, [loginId, keycloak.token, kehadiranStatus?.status])
+
+  const handleSurveySubmitSuccess = () => {
+    setSurveyCompleted(true)
+  }
+
+  const handleNoSurvey = () => {
+    setHasSurvey(false)
+    setCheckingSurvey(false)
+  }
+
+  const refreshAction = () => {
+    setRefreshKehadiran(!refreshKehadiran)
+  }
+
+  const formatTime = (value) => (typeof value === 'string' ? value.slice(0, 5) : '')
+  const waktuDatang = formatTime(
+    kehadiranStatus?.absenDatang ||
+      kehadiranStatus?.jamDatang ||
+      kehadiranStatus?.waktuDatang ||
+      kehadiranStatus?.datang,
+  )
+  const waktuPulang = formatTime(
+    kehadiranStatus?.absenPulang ||
+      kehadiranStatus?.jamPulang ||
+      kehadiranStatus?.waktuPulang ||
+      kehadiranStatus?.pulang,
+  )
+  const infoText = waktuPulang
+    ? `Anda sudah absen pulang pada pukul ${waktuPulang}`
+    : waktuDatang
+      ? `Anda sudah absen datang pada pukul ${waktuDatang}`
+      : ''
 
   const { loading, error, data } = useQuery(GET_PEGAWAI, {
     variables: { id: id || loginId },
@@ -97,6 +193,28 @@ const Profil = () => {
         {/* Profile Header Section */}
         <CCol lg={4} xl={4}>
           <div className="profile-sidebar-sticky">
+            <div className="mb-3">
+              {!checkingSurvey &&
+              kehadiranStatus?.status === 'PULANG' &&
+              hasSurvey &&
+              !surveyCompleted ? (
+                <Survey
+                  nip={loginId}
+                  onSubmitSuccess={handleSurveySubmitSuccess}
+                  onNoSurvey={handleNoSurvey}
+                />
+              ) : (
+                !checkingSurvey && (
+                  <Tombol
+                    clicked={refreshAction}
+                    status={kehadiranStatus?.status}
+                    pegawai={data.pegawai}
+                    infoText={infoText}
+                  />
+                )
+              )}
+              {kehadiranError && <CAlert color="danger">Error: {kehadiranError}</CAlert>}
+            </div>
             <Header pegawai={data.pegawai} />
           </div>
         </CCol>

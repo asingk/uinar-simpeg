@@ -1,121 +1,23 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { gql, useQuery } from '@apollo/client'
 import axios from 'axios'
 import { CAlert, CCol, CRow } from '@coreui/react-pro'
 import Laporan from '../../components/kehadiran/Laporan'
-import Tombol from '../../components/kehadiran/Tombol'
 import SelectBulanTahunKehadiran from '../../components/kehadiran/SelectBulanTahunKehadiran'
 import { KeycloakContext } from 'src/context'
-import Survey from 'src/components/kehadiran/Survey'
-
-const GET_PEGAWAI_PROFIL = gql`
-  query PegawaiProfil($id: ID!) {
-    pegawai(id: $id) {
-      id
-      nama
-      jabatanSaatIni {
-        id
-        level {
-          id
-          nama
-          jabatan {
-            id
-            nama
-          }
-        }
-        sublevel {
-          id
-          nama
-        }
-        grade {
-          id
-          remun
-        }
-      }
-      unitKerjaSaatIni {
-        id
-        unitKerja {
-          id
-          nama
-        }
-        bagian {
-          id
-          nama
-        }
-        subbag {
-          id
-          nama
-        }
-        posisi {
-          id
-          nama
-        }
-        grade {
-          id
-          remun
-        }
-        isSecondary
-      }
-      jenisJabatan
-    }
-  }
-`
 
 const Kehadiran = () => {
   console.debug('rendering... Kehadiran')
 
   const date = new Date()
   const keycloak = useContext(KeycloakContext)
-  const loginId = keycloak.idTokenParsed?.preferred_username
 
   const [bulan, setBulan] = useState(date.getMonth() + 1)
   const [tahun, setTahun] = useState(date.getFullYear())
-  const [refreshLaporan, toggleRefreshLaporan] = useState(true)
+  const refreshLaporan = true
   const [data, setData] = useState()
   const [seninKamis, setSeninKamis] = useState()
   const [jumat, setJumat] = useState()
   const [error, setError] = useState('')
-  const [surveyCompleted, setSurveyCompleted] = useState(false)
-  const [checkingSurvey, setCheckingSurvey] = useState(true)
-  const [hasSurvey, setHasSurvey] = useState(true)
-
-  // Cek status survey hari ini hanya jika status PULANG
-  useEffect(() => {
-    const checkTodaySurveyAnswer = async () => {
-      if (!loginId || data?.status !== 'PULANG') {
-        // Jika bukan status PULANG, set surveyCompleted true agar tidak memblokir
-        setSurveyCompleted(true)
-        setCheckingSurvey(false)
-        return
-      }
-
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_SIMPEG_REST_URL}/pegawai/${loginId}/findTodayAnswer`,
-          {
-            headers: {
-              Authorization: `Bearer ${keycloak.token}`,
-            },
-          },
-        )
-        // Jika ada data response dengan id, berarti sudah isi survey hari ini
-        setSurveyCompleted(!!response.data?.id)
-      } catch (err) {
-        // Jika error 404 atau tidak ada data, berarti belum isi survey
-        if (err.response?.status === 404) {
-          setSurveyCompleted(false)
-        } else {
-          console.error('Error checking survey:', err)
-          // Jika error lain, anggap sudah isi survey agar tidak memblokir
-          setSurveyCompleted(true)
-        }
-      } finally {
-        setCheckingSurvey(false)
-      }
-    }
-
-    checkTodaySurveyAnswer()
-  }, [loginId, keycloak.token, data?.status])
 
   useEffect(() => {
     const getStatusSaatIni = async () => {
@@ -164,23 +66,6 @@ const Kehadiran = () => {
     if (!data) getStatusSaatIni()
   }, [data, keycloak.token])
 
-  const handleSurveySubmitSuccess = () => {
-    setSurveyCompleted(true)
-  }
-
-  const handleNoSurvey = () => {
-    setHasSurvey(false)
-    setCheckingSurvey(false)
-  }
-
-  const { data: dataPeg } = useQuery(GET_PEGAWAI_PROFIL, {
-    variables: { id: loginId },
-  })
-
-  const refreshAction = () => {
-    toggleRefreshLaporan(!refreshLaporan)
-  }
-
   const onChangeBulan = (bulan, tahun) => {
     setBulan(Number(bulan))
     setTahun(Number(tahun))
@@ -189,21 +74,7 @@ const Kehadiran = () => {
   return (
     <>
       <CRow>
-        <CCol className="mb-3">
-          {/* Tampilkan Survey hanya jika status PULANG, ada survey, dan belum diisi */}
-          {!checkingSurvey && data?.status === 'PULANG' && hasSurvey && !surveyCompleted ? (
-            <Survey
-              nip={loginId}
-              onSubmitSuccess={handleSurveySubmitSuccess}
-              onNoSurvey={handleNoSurvey}
-            />
-          ) : (
-            !checkingSurvey && (
-              <Tombol clicked={refreshAction} status={data?.status} pegawai={dataPeg?.pegawai} />
-            )
-          )}
-          {error && <CAlert color="danger">Error: {error}</CAlert>}
-        </CCol>
+        <CCol className="mb-3">{error && <CAlert color="danger">Error: {error}</CAlert>}</CCol>
       </CRow>
       <CRow className="my-3 justify-content-center">
         <CCol md="6" lg="3">
