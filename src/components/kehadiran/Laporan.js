@@ -76,14 +76,18 @@ const Laporan = (props) => {
           {/*<CTableDataCell>*/}
           {/*  {item.jadwalDatang ? item.jadwalDatang.substr(0, 5) : '-'}*/}
           {/*</CTableDataCell>*/}
-          <CTableDataCell>{item.absenDatang ? item.absenDatang.substr(0, 5) : '-'}</CTableDataCell>
+          <CTableDataCell>
+            {item.keteranganDatang || (item.absenDatang ? item.absenDatang.substr(0, 5) : '-')}
+          </CTableDataCell>
           {/*<CTableDataCell>*/}
           {/*  {typeof item.cepatTelatDatang === 'number' ? item.cepatTelatDatang : '-'}*/}
           {/*</CTableDataCell>*/}
           {/*<CTableDataCell>*/}
           {/*  {item.jadwalPulang ? item.jadwalPulang.substr(0, 5) : '-'}*/}
           {/*</CTableDataCell>*/}
-          <CTableDataCell>{item.absenPulang ? item.absenPulang.substr(0, 5) : '-'}</CTableDataCell>
+          <CTableDataCell>
+            {item.keteranganPulang || (item.absenPulang ? item.absenPulang.substr(0, 5) : '-')}
+          </CTableDataCell>
           {/*<CTableDataCell>*/}
           {/*  {typeof item.cepatTelatPulang === 'number' ? item.cepatTelatPulang : '-'}*/}
           {/*</CTableDataCell>*/}
