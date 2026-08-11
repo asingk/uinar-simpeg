@@ -193,28 +193,30 @@ const Profil = () => {
         {/* Profile Header Section */}
         <CCol lg={4} xl={4}>
           <div className="profile-sidebar-sticky">
-            <div className="mb-3">
-              {!checkingSurvey &&
-              kehadiranStatus?.status === 'PULANG' &&
-              hasSurvey &&
-              !surveyCompleted ? (
-                <Survey
-                  nip={loginId}
-                  onSubmitSuccess={handleSurveySubmitSuccess}
-                  onNoSurvey={handleNoSurvey}
-                />
-              ) : (
-                !checkingSurvey && (
-                  <Tombol
-                    clicked={refreshAction}
-                    status={kehadiranStatus?.status}
-                    pegawai={data.pegawai}
-                    infoText={infoText}
+            {loginId === data.pegawai.id && (
+              <div className="mb-3">
+                {!checkingSurvey &&
+                kehadiranStatus?.status === 'PULANG' &&
+                hasSurvey &&
+                !surveyCompleted ? (
+                  <Survey
+                    nip={loginId}
+                    onSubmitSuccess={handleSurveySubmitSuccess}
+                    onNoSurvey={handleNoSurvey}
                   />
-                )
-              )}
-              {kehadiranError && <CAlert color="danger">Error: {kehadiranError}</CAlert>}
-            </div>
+                ) : (
+                  !checkingSurvey && (
+                    <Tombol
+                      clicked={refreshAction}
+                      status={kehadiranStatus?.status}
+                      pegawai={data.pegawai}
+                      infoText={infoText}
+                    />
+                  )
+                )}
+                {kehadiranError && <CAlert color="danger">Error: {kehadiranError}</CAlert>}
+              </div>
+            )}
             <Header pegawai={data.pegawai} />
           </div>
         </CCol>
